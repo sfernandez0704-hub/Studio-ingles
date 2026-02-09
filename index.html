@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>English Practice</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #000000, #0000);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: system-ui, Arial, sans-serif;
+    }
+
+    .card {
+      background: white;
+      width: 420px;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #444;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    button {
+      margin-top: 15px;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background: #000000;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #e64a19;
+    }
+
+    #response {
+      margin-top: 20px;
+      padding: 12px;
+      background: #f5f5f5;
+      border-radius: 6px;
+      white-space: pre-line;
+      font-weight: 500;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+    <h2>Today we are going to practice English</h2>
+    <p>Write a topic to start:</p>
+<ul style="list-style: none; padding: 0; margin-bottom: 15px;">
+    <li><b>past simple</b></li>
+    <li><b>present simple</b></li>
+    <li><b>present continuos</b></li>
+    <li><b>future will</b></li>
+    <li><b>going to</b></li>
+</ul>
+
+
+    <input type="text" id="text" placeholder="Write here">
+
+    <button onclick="send()">Send</button>
+    <button onclick="enviarInfo()">📘 Grammar Info</button>
+
+
+    <div id="response"></div>
+  </div>
+
+<script>
+  let infoVisible = false;
+
+  const grammarInfo = {
+    "past simple": "Past Simple: sujeto + verbo en pasado.\nExample: I visited my grandma yesterday.",
+    "present simple": "Present Simple: sujeto + verbo base.\nExample: She works every day.",
+    "present continuos": "Present Continuous: am/is/are + verb-ing.\nExample: They are studying now.",
+    "future will": "Future (will): will + verb.\nExample: I will call you later.",
+    "going to": "Going to: am/is/are + going to + verb.\nExample: We are going to travel."
+  };
+
+  function send() {
+    const texto = document.getElementById("text").value.trim().toLowerCase();
+    const responseDiv = document.getElementById("response");
+
+    if (!texto) {
+      responseDiv.innerText = "Please write a topic first.";
+      return;
+    }
+
+    if (grammarInfo[texto]) {
+      responseDiv.innerText = grammarInfo[texto];
+    } else {
+      responseDiv.innerText =
+        "Topic not found. Try: past simple, present simple, present continuos, future will, going to.";
+    }
+
+    document.getElementById("text").value = "";
+    infoVisible = false;
+  }
+
+  function enviarInfo() {
+    const responseDiv = document.getElementById("response");
+
+    if (infoVisible) {
+      responseDiv.innerText = "";
+      infoVisible = false;
+      return;
+    }
+
+    responseDiv.innerText =
+      "Available topics:\n- past simple\n- present simple\n- present continuos\n- future will\n- going to";
+    infoVisible = true;
+  }
+</script>
+
+</body>
+</html>
+
