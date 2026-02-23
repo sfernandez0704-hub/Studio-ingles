@@ -95,51 +95,142 @@
   </div>
 
 <script>
-  let infoVisible = false;
-
-  const grammarInfo = {
-    "past simple": "Past Simple: sujeto + verbo en pasado.\nExample: I visited my grandma yesterday.",
-    "present simple": "Present Simple: sujeto + verbo base.\nExample: She works every day.",
-    "present continuos": "Present Continuous: am/is/are + verb-ing.\nExample: They are studying now.",
-    "future will": "Future (will): will + verb.\nExample: I will call you later.",
-    "going to": "Going to: am/is/are + going to + verb.\nExample: We are going to travel."
+  // ✅ Temas + actividades (del app.py, llevado al front)
+  const temas = {
+    "past simple": [
+      { ejemplo: "Example: I played with my friends yesterday / play",
+        frase: "She (____) for the exam yesterday. / study",
+        respuesta: "studied" },
+      { ejemplo: "Example: I worked with my father last night / work",
+        frase: "They (____) a movie last night. / watch",
+        respuesta: "watched" },
+      { ejemplo: "Example: I was tired yesterday / be",
+        frase: "I (____) very tired yesterday. / be",
+        respuesta: "was" }
+    ],
+    "present simple": [
+      { ejemplo: "Example: I study after school / study",
+        frase: "She (____) coffee every morning. / drink",
+        respuesta: "drinks" },
+      { ejemplo: "Example: He works for his family / work",
+        frase: "They (____) football on Sundays. / play",
+        respuesta: "play" }
+    ],
+    "present continuous": [
+      { ejemplo: "Example: I am playing football / play",
+        frase: "She (____) now. / study",
+        respuesta: "is studying" },
+      { ejemplo: "Example: He is reading a book / read",
+        frase: "They (____) TV at the moment. / watch",
+        respuesta: "are watching" }
+    ],
+    "future will": [
+      { ejemplo: "Example: I will play with you / play",
+        frase: "I (____) call you later. / call",
+        respuesta: "will" },
+      { ejemplo: "Example: He will study later",
+        frase: "She (____) help you tomorrow. / help",
+        respuesta: "will" }
+    ],
+    "going to": [
+      { ejemplo: "Example: She is going to study / go",
+        frase: "I am (____) travel next week. / go",
+        respuesta: "going to" },
+      { ejemplo: "Example: We are going to travel / go",
+        frase: "They are (____) buy a car. / buy",
+        respuesta: "going to" }
+    ]
   };
 
+  const info_temas =
+`📘 GRAMMAR GUIDE
+
+🔹 Past Simple
+Se usa para acciones terminadas en el pasado.
+Ejemplo: I studied yesterday.
+
+🔹 Present Simple
+Se usa para rutinas y hábitos.
+Ejemplo: She drinks coffee every morning.
+
+🔹 Present Continuous
+Se usa para acciones que están ocurriendo ahora.
+Ejemplo: She is studying now.
+
+🔹 Future Will
+Se usa para decisiones espontáneas y promesas.
+Ejemplo: I will call you later.
+
+🔹 Going To
+Se usa para planes ya decididos.
+Ejemplo: I am going to travel next week.`;
+
+  // ✅ Estado del quiz (por usuario / navegador)
+  let temaActual = null;
+  let indice = 0;
+  let esperandoRespuesta = false;
+
+  function render(texto) {
+    document.getElementById("response").innerText = texto;
+  }
+
+  function preguntaActualTexto() {
+    const q = temas[temaActual][indice];
+    return `${q.ejemplo}\n\nCompleta la frase:\n${q.frase}`;
+  }
+
   function send() {
-    const texto = document.getElementById("text").value.trim().toLowerCase();
-    const responseDiv = document.getElementById("response");
+    const input = document.getElementById("text");
+    const texto = input.value.trim().toLowerCase();
+    input.value = "";
 
     if (!texto) {
-      responseDiv.innerText = "Please write a topic first.";
+      render("Please write something: a topic (e.g., past simple) or type 'info'.");
       return;
     }
 
-    if (grammarInfo[texto]) {
-      responseDiv.innerText = grammarInfo[texto];
-    } else {
-      responseDiv.innerText =
-        "Topic not found. Try: past simple, present simple, present continuos, future will, going to.";
+    // 📘 Info global
+    if (texto === "info") {
+      render(info_temas);
+      return;
     }
 
-    document.getElementById("text").value = "";
-    infoVisible = false;
+    // ✅ Elegir tema
+    if (!esperandoRespuesta && temas[texto]) {
+      temaActual = texto;
+      indice = 0;
+      esperandoRespuesta = true;
+      render(preguntaActualTexto());
+      return;
+    }
+
+    // ✅ Responder
+    if (esperandoRespuesta && temaActual) {
+      const q = temas[temaActual][indice];
+      if (texto === q.respuesta.toLowerCase()) {
+        indice += 1;
+        if (indice < temas[temaActual].length) {
+          render("✅ Correcto!\n\n" + preguntaActualTexto());
+        } else {
+          render("🎉 Excelente! Terminaste todas las preguntas.\n\nEscribe otro tema para seguir.");
+          esperandoRespuesta = false;
+          temaActual = null;
+          indice = 0;
+        }
+      } else {
+        render("❌ Incorrecto. Try again.\n\n" + preguntaActualTexto());
+      }
+      return;
+    }
+
+    // ❌ Nada coincide
+    render("Topic not found. Try:\n- past simple\n- present simple\n- present continuous\n- future will\n- going to\n\nOr type 'info'.");
   }
 
   function enviarInfo() {
-    const responseDiv = document.getElementById("response");
-
-    if (infoVisible) {
-      responseDiv.innerText = "";
-      infoVisible = false;
-      return;
-    }
-
-    responseDiv.innerText =
-      "Available topics:\n- past simple\n- present simple\n- present continuos\n- future will\n- going to";
-    infoVisible = true;
+    render("Available topics:\n- past simple\n- present simple\n- present continuous\n- future will\n- going to\n\nTip: type 'info' for the grammar guide.");
   }
 </script>
-
 </body>
 </html>
 
